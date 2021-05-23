@@ -1,0 +1,18 @@
+version: "3"
+services:
+
+  mosquitto:
+    image: "eclipse-mosquitto"
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    restart: "always"
+    volumes:
+      - "./config/mosquitto.conf:/mosquitto/config/mosquitto.conf"
+      - "./config/users:/mosquitto/config/users"
+      - "mosquitto-data:/mosquitto/data/"
+      - "mosquitto-logs:/mosquitto/log/"
+
+volumes:
+  mosquitto-data:
+  mosquitto-logs:
