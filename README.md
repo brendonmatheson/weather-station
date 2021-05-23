@@ -17,6 +17,10 @@ sudo apt update
 sudo apt upgrade -y
 ```
 
+References:
+
+- [https://www.raspberrypi.org/forums/viewtopic.php?t=275370](https://www.raspberrypi.org/forums/viewtopic.php?t=275370)
+
 ### Check Distro for Later Reference
 
 ```bash
@@ -205,7 +209,10 @@ The `local-influx` component provides a Docker Compose configuration for running
 
 References:
 
-- [InfluxDB 1.8](https://docs.influxdata.com/influxdb/v1.8/)
+- [InfluxDB Docker Image](https://hub.docker.com/_/influxdb)
+- [InfluxDB 1.8 Documentation](https://docs.influxdata.com/influxdb/v1.8/)
+- [Telegraf Docker Image](https://hub.docker.com/_/telegraf)
+- [Explore data using InfluxQL](https://docs.influxdata.com/influxdb/v1.8/query_language/explore-data/)
 
 ### Running the Local Storage
 
@@ -251,6 +258,11 @@ GRANT ALL ON weather to telegraf
 CREATE USER grafana WITH PASSWORD 'password'
 GRANT READ ON weather to grafana
 ```
+
+References:
+
+- [InfluxDB 1.x Authentication](https://docs.influxdata.com/influxdb/v1.8/administration/authentication_and_authorization/)
+- [InfluxDB 1.x User Setup](https://docs.influxdata.com/influxdb/v1.8/administration/authentication_and_authorization/#user-management-commands)
 
 ### Telgraf Debugging
 
