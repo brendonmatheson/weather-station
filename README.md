@@ -1,4 +1,4 @@
-# Heathcote Weather Station 1
+# Alesium Weather Station 1
 
 ## Hardware Platform
 
@@ -73,7 +73,7 @@ References:
 
 ### Prometheus Exporters
 
-See `als_sys_container_telemetry` for full details.
+See `als_sys_container_telemetry` for details of how to set these up.
 
 Exporters installed:
 
@@ -87,22 +87,19 @@ Exporters installed:
 ### git
 
 ```bash
-sudo apt install -y \
-	git
+sudo apt install -y git
 ```
 
 ### I2C Utilities
 
 ```bash
-sudo apt install -y \
-	i2c-tools
+sudo apt install -y i2c-tools
 ```
 
 ### tmux
 
 ```bash
-sudo apt install -y \
-	tmux
+sudo apt install -y tmux
 ```
 
 ### MQTT / Mosquitto Tools
