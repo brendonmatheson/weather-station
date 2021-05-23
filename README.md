@@ -8,6 +8,15 @@
 
 ## Operating System Configuration
 
+### Install Raspbian OS Lite 32-bit
+
+Install, then update/ugprade
+
+```bash
+sudo apt update
+sudo apt upgrade -y
+```
+
 ### Check Distro for Later Reference
 
 ```bash
@@ -34,7 +43,13 @@ References:
 
 ### Docker
 
-Install Docker using the [convenience script](https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script) from the Docker site.
+Install Docker using the [convenience script](https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script) from the Docker site:
+
+```bash
+sudo apt-get remove docker docker-engine docker.io containerd runc
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+```
 
 Install docker-compose:
 
@@ -61,7 +76,7 @@ Exporters installed:
 - rpi_exporter
 - node_exporter
 - Docker Engine
-- cAdvisor
+- cAdvisor (TODO: note arm7 version not yet available)
 
 ## Foundational Tools
 
@@ -77,6 +92,13 @@ sudo apt install -y \
 ```bash
 sudo apt install -y \
 	i2c-tools
+```
+
+### tmux
+
+```bash
+sudo apt install -y \
+	tmux
 ```
 
 ### MQTT / Mosquitto Tools
@@ -173,15 +195,110 @@ References:
 - [mosquitto_pub](https://mosquitto.org/man/mosquitto_pub-1.html)
 - [mosquitto_sub](https://mosquitto.org/man/mosquitto_sub-1.html)
 
-## Software Frameworks
+## InfluxDB Local Storage
 
-Install sensor libraries:
+### Introduction
+
+The weather station stores data locally in addition to that data being shipped out via MQTT for external processing and storage.
+
+The `local-influx` component provides a Docker Compose configuration for running InfluxDB 1.8 for storage and Telegraf for data-shipping.  Note that we are using 1.8 for the local storage because it is the latest version for which an official image supporting arm7 architecture is maintained by Influx.
+
+References:
+
+- [InfluxDB 1.8](https://docs.influxdata.com/influxdb/v1.8/)
+
+### Running the Local Storage
+
+Start the database using the provided convenience script:
+
+```bash
+./start.sh
+```
+
+Stop the database using the provided convenience script:
+
+```bash
+./stop.sh
+```
+
+### First Run User Confguration
+
+If this is the first time that the stack has been run on a node, or if the data volume was dropped, then users need to be created.
+
+- First disable authentication by setting `auth-enabled = false` in confg/influxb.conf
+- Launch the stack with `./start.sh`
+- Open an Influx shell with `./influx.sh`
+- Create the `weather` database:
+
+```
+CREATE DATABASE "weather"
+
+# Select the database - required for the following CREATE USER steps
+USE weather
+```
+
+- Create the required users:
+
+```
+# admin user - used by the influx.sh shell script
+CREATE USER admin WITH PASSWORD 'password' WITH ALL PRIVILEGES
+
+# telegraf - used by Telegraf for writing data to InfluxDB
+CREATE USER telegraf WITH PASSWORD 'password'
+GRANT ALL ON weather to telegraf
+
+# grafana - used by Grafana dashboards for reading data
+CREATE USER grafana WITH PASSWORD 'password'
+GRANT READ ON weather to grafana
+```
+
+### Telgraf Debugging
+
+To debug Telgraf you can:
+
+- Enable debug-level logging by uncommenting  the `debug=true` line in config/telegraf.conf
+- Send messages to file (as well as influx) by uncommenting the `outputs.file` block
+
+## Sensor Loop
+
+### Software Frameworks
+
+Install required libraries:
 
 ```bash
 sudo pip3 install \
-	RPi.bme280 \
-	paho-mqtt
+    RPi.bme280 \
+    paho-mqtt
 ```
+
+### Design
+
+The `sensor_loop` collects measurements from it's attached sensors every second, formats those measurements into an Influx line protocol messages, and sends the message the local `mqtt-broker`.
+
+Note that the configuration of the `mqtt` input plugin on Telegraf in the local-influx component is set to expect influx line format messages.
+
+References:
+
+- [InfluxDB Line Protocol](https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/)
+
+### Execution
+
+```bas
+python3 main.py
+```
+
+### Testing
+
+```bash
+mosquitto_sub -t "hea92weather01/humidity" -u "hea92weather01" -P "password"
+mosquitto_sub -t "hea92weather01/pressure" -u "hea92weather01" -P "password"
+mosquitto_sub -t "hea92weather01/temperature" -u "hea92weather01" -P "password"
+```
+
+References:
+
+- [mosquitto_pub](https://mosquitto.org/man/mosquitto_pub-1.html)
+- [mosquitto_sub](https://mosquitto.org/man/mosquitto_sub-1.html)
 
 ## Appendix A - Useful Commands
 
