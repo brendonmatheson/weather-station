@@ -43,3 +43,11 @@ Exporters installed:
 - Docker Engine
 - cAdvisor
 
+## Software Frameworks
+
+Install sensor libraries:
+
+```bash
+sudo pip3 install RPi.bme280
+```
+
