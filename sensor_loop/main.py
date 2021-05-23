@@ -30,16 +30,17 @@ bme280.load_calibration_params(bus,address)
 base_topic = "hea92weather01"
 
 while True:
+
 	bme280_data = bme280.sample(bus, address)
 	humidity = bme280_data.humidity
 	pressure = bme280_data.pressure
 	temperature = bme280_data.temperature
 
-	print(humidity, pressure, temperature)
+	line = "weather,station=hea92weather01 humidity=" + str(humidity) + ",pressure=" + str(pressure) + ",temperature=" + str(temperature)
 
-	client.publish(base_topic + "/humidity", humidity)
-	client.publish(base_topic + "/pressure", pressure)
-	client.publish(base_topic + "/temperature", temperature)
+	print(line)
+
+	client.publish("weather", line)
 
 	sleep(1)
 

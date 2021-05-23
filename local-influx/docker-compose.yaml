@@ -10,8 +10,13 @@ services:
     ports:
       - "8086:8086"
     volumes:
-      - "./config/influxdb.conf:/etc/influxdb/infux.conf:ro"
+      - "./config/influxdb.conf:/etc/influxdb/influxdb.conf:ro"
       - "influx_data:/var/lib/influxdb"
+
+  telegraf:
+    image: "telegraf:1.18.2"
+    volumes:
+      - "./config/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
 
 volumes:
   influx_data:
