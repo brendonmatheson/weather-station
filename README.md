@@ -364,3 +364,46 @@ AttributeError: module 'bme280' has no attribute 'load_calibration_params'
 
 The root cause was that I had named my script `bme280.py` and so the `import bme280` was resolving to my script rather than the actual BME280 library.  After renaming my script to `sensor_loop.py` the import was resolved correctly.
 
+## Appendix D - Third-Party Weather Station Products
+
+### Gaia Air Quality Monitor
+
+http://aqicn.org/gaia/
+
+## Appendix E - Sensors
+
+### SDS011 Air Quality Sensor
+
+- [AliExpress Listings](https://www.aliexpress.com/wholesale?catId=0&initiative_id=SB_20210316183809&SearchText=sds011)
+- [ESPHome Support](https://esphome.io/components/sensor/sds011.html)
+
+### PMS3003 Air Quality Sensor
+
+TODO
+
+### PMS5003 Air Quality Sensor
+
+TODO
+
+- [ESPHome Support](https://esphome.io/components/sensor/pmsx003.html)
+
+### PMS7003 Air Quality Sensor
+
+TODO
+
+### ZH03B Air Quality Sensor
+
+TODO
+
+### PMSA0003 Air Quality Sensor
+
+TODO
+
+### MH-Z19 MH-Z19B NDIR CO2 Sensor Module 
+
+TODO
+
+
+
+
+
