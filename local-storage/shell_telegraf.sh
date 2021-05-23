@@ -9,5 +9,5 @@
 # work, Aleisium.  If you infringe our copyright, you render yourself liable
 # for prosecution.
 
-sudo docker exec -it local-influx_telegraf_1 tail -f /tmp/weather.log
+sudo docker exec -it local-storage_telegraf_1 /bin/bash
 

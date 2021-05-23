@@ -9,5 +9,5 @@
 # work, Aleisium.  If you infringe our copyright, you render yourself liable
 # for prosecution.
 
-sudo docker logs -f local-influx_telegraf_1
+sudo docker exec -it local-storage_influxdb_1 /bin/bash
 
