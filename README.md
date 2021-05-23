@@ -1,4 +1,4 @@
-# Alesium Weather Station 1
+# Weather Station
 
 ## Hardware Platform
 
