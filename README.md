@@ -1,5 +1,9 @@
 # Weather Station
 
+## Architecture
+
+![](_doc/architecture.png)
+
 ## Hardware Platform
 
 - Raspberry Pi 3B
