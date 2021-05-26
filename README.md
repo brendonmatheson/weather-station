@@ -129,6 +129,14 @@ sudo systemctl stop mosquitto
 sudo systemctl disable mosquitto
 ```
 
+## Clone Weather Station Repository
+
+Clone the repo from GitHub:
+
+```bash
+https://github.com/brendonmatheson/weather-station.git
+```
+
 ## MQTT Local Broker
 
 ### Introduction
@@ -277,7 +285,8 @@ Install required libraries:
 ```bash
 sudo pip3 install \
     RPi.bme280 \
-    paho-mqtt
+    paho-mqtt \
+    SI1145
 ```
 
 ### Design
@@ -308,6 +317,23 @@ References:
 
 - [mosquitto_pub](https://mosquitto.org/man/mosquitto_pub-1.html)
 - [mosquitto_sub](https://mosquitto.org/man/mosquitto_sub-1.html)
+
+### BME280 Temperature / Humidity / Pressure Sensor
+
+References:
+
+- [Raspberry Pi Weather Station - BME280](https://projects.raspberrypi.org/en/projects/build-your-own-weather-station/2)
+
+### GY1145 Light Sensor
+
+The weather station has a GY1145 sensor and uses the SI1145 Python library by Joe Gutting on GitHub.
+
+- [SI1145 library on PyPI](https://pypi.org/project/SI1145/)
+- [SI1145 library on GitHub](https://github.com/THP-JOE/Python_SI1145)
+
+References:
+
+- [Raspberry Pi and Si1145 sensor example](http://www.pibits.net/code/raspberry-pi-and-si1145-sensor-example.php)
 
 ## Appendix A - Useful Commands
 
