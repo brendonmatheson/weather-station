@@ -1,0 +1,4 @@
+RPi.bme280
+paho-mqtt
+SI1145
+
