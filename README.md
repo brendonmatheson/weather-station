@@ -147,7 +147,7 @@ https://github.com/brendonmatheson/weather-station.git
 
 The weather station runs an MQTT broker locally so that a local InfluxDB can capture measurements at the same time as those messages are forwarded via a bridge to a central MQTT broker for on-prem and on-cloud persistence.
 
-The `mqtt-broker` component provides a Docker Compose configuration for running the local broker.
+The `broker` component provides a Docker Compose configuration for running the local broker.
 
 The MQTT broker is running on the official [eclipse-mosquitto](https://hub.docker.com/_/eclipse-mosquitto) Docker image, and the version is pinned and should be updated regularly.
 
@@ -167,7 +167,7 @@ Stop the broker using the provided convenience script:
 
 ### Configuration
 
-Configuration for the local broker is under `config/` in the `mqtt-broker` component.
+Configuration for the local broker is under `config/` in the `broker` component.
 
 | Setting              | Value                             | Notes                                                        |
 | -------------------- | --------------------------------- | ------------------------------------------------------------ |
@@ -175,7 +175,7 @@ Configuration for the local broker is under `config/` in the `mqtt-broker` compo
 | log_dest             | file /mosquitto/log/mosquitto.log | Location for the log which is in-turn mapped to a volume in docker-compose.yaml. |
 | persistence          | true                              | Enables persistence.                                         |
 | persistence_location | /mosquitto/data/                  | Location for persistence which is in-turn mapped to a volume in docker-compose.yaml. |
-| password_file        | /mosquitto/config/users           | Location for users which is in-turn mapped from the file in the mqtt-broker component files. |
+| password_file        | /mosquitto/config/users           | Location for users which is in-turn mapped from the file in the `broker` component files. |
 
 References:
 
@@ -214,7 +214,7 @@ References:
 
 The weather station stores data locally in addition to that data being shipped out via MQTT for external processing and storage.
 
-The `local-influx` component provides a Docker Compose configuration for running InfluxDB 1.8 for storage and Telegraf for data-shipping.  Note that we are using 1.8 for the local storage because it is the latest version for which an official image supporting arm7 architecture is maintained by Influx.
+The `storage` component provides a Docker Compose configuration for running InfluxDB 1.8 for storage and Telegraf for data-shipping.  Note that we are using 1.8 for the local storage because it is the latest version for which an official image supporting arm7 architecture is maintained by Influx.
 
 References:
 
@@ -280,34 +280,53 @@ To debug Telgraf you can:
 - Enable debug-level logging by uncommenting  the `debug=true` line in config/telegraf.conf
 - Send messages to file (as well as influx) by uncommenting the `outputs.file` block
 
-## Sensor Loop
+## Sensor Reader
 
-### Software Frameworks
+### Running Directly
 
-Install required libraries:
+To run the reader directly on the host, first install required libraries:
 
 ```bash
-sudo pip3 install \
+pip3 install \
     RPi.bme280 \
     paho-mqtt \
     SI1145
 ```
 
+Then launch the process:
+
+```bash
+python3 main.py
+```
+
+### Running in Docker
+
+sensor-reader is intended to normally be run as a Docker container.
+
+Use the provided convenience script to build the Docker image:
+
+```bash
+./build.sh
+```
+
+To test, use the provided convenience script:
+
+```bash
+./run.sh
+```
+
 ### Design
 
-The `sensor_loop` collects measurements from it's attached sensors every second, formats those measurements into an Influx line protocol messages, and sends the message the local `mqtt-broker`.
+The `sensor` component collects measurements from it's attached sensors every second, formats those measurements into an Influx line protocol messages, and sends the message to the local broker.
+
+Note that the configuration of the `mqtt` input plugin on Telegraf in the `storage` component is set to expect influx line format messages.
+
 
 Note that the configuration of the `mqtt` input plugin on Telegraf in the local-influx component is set to expect influx line format messages.
 
 References:
 
 - [InfluxDB Line Protocol](https://docs.influxdata.com/influxdb/v1.8/write_protocols/line_protocol_tutorial/)
-
-### Execution
-
-```bas
-python3 main.py
-```
 
 ### Testing
 
