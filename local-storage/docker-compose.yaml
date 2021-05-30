@@ -7,6 +7,8 @@ services:
 
   influxdb:
     image: "influxdb:1.8.5"
+    networks:
+      - "weather0"
     ports:
       - "8086:8086"
     restart: "always"
@@ -16,9 +18,16 @@ services:
 
   telegraf:
     image: "telegraf:1.18.2"
+    networks:
+      - "weather0"
     restart: "always"
     volumes:
       - "./config/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
+
+networks:
+  weather0:
+    external: true
+    name: weather0
 
 volumes:
   influx_data:

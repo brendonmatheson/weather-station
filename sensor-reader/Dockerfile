@@ -1,4 +1,3 @@
-#FROM python:3.9.5-alpine3.13
 FROM python:3.9.5-buster
 
 RUN mkdir /app

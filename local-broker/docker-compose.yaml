@@ -3,6 +3,8 @@ services:
 
   mosquitto:
     image: "eclipse-mosquitto"
+    networks:
+      - "weather0"
     ports:
       - "1883:1883"
       - "9001:9001"
@@ -12,6 +14,11 @@ services:
       - "./config/users:/mosquitto/config/users"
       - "mosquitto-data:/mosquitto/data/"
       - "mosquitto-logs:/mosquitto/log/"
+
+networks:
+  weather0:
+    external: true
+    name: weather0
 
 volumes:
   mosquitto-data:
