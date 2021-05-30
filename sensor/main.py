@@ -22,7 +22,7 @@ class SensorReader:
 		# Configure MQTT CLient
 		#
 
-		broker = "local-broker_mosquitto_1"
+		broker = "broker_mosquitto_1"
 		port = 1883
 		client_id = "hea92weather01"
 		username = "hea92weather01"

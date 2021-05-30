@@ -9,5 +9,5 @@
 # work, Aleisium.  If you infringe our copyright, you render yourself liable
 # for prosecution.
 
-sudo docker exec -it local-storage_influxdb_1 influx -username admin -password password
+sudo docker exec -it storage_influxdb_1 influx -username admin -password password
 
