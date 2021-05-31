@@ -2,7 +2,7 @@ version: "3"
 services:
 
   mosquitto:
-    image: "eclipse-mosquitto"
+    image: "eclipse-mosquitto:2.0.10"
     networks:
       - "weather0"
     ports:
