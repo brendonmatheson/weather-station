@@ -9,5 +9,5 @@
 # work, Aleisium.  If you infringe our copyright, you render yourself liable
 # for prosecution.
 
-sudo docker exec -it mqtt-broker_mosquitto_1 tail -f /mosquitto/log/mosquitto.log
+sudo docker exec -it broker_mosquitto_1 tail -f /mosquitto/log/mosquitto.log
 
