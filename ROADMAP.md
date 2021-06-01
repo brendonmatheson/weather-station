@@ -44,5 +44,6 @@
 | WST-14          | Sensor / Sunlight / GY1145                                   | Visible / UV-A / UV-B.  Also test to see how much, if any, of the UV-C spectrum it can see. | Complete    | 2021-05-26 |
 | WST-30          | Wrap sensor_loop in a Docker image                           |                                                              | Complete    | 2021-05-30 |
 | WST-29          | Reconnect MQTT when dropped                                  |                                                              | Complete    | 2021-06-01 |
+| WST-32          | Parameterize                                                 | Currently many values are hardcoded for my environment.  Need to parameterize so that others could use it. | Complete    | 2021-06-01 |
 |                 |                                                              |                                                              |             |            |
 
