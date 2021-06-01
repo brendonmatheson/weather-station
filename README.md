@@ -208,6 +208,85 @@ References:
 - [mosquitto_pub](https://mosquitto.org/man/mosquitto_pub-1.html)
 - [mosquitto_sub](https://mosquitto.org/man/mosquitto_sub-1.html)
 
+### Design
+
+The MQTT processing loop is based on explanation and code samples from [Steve's Internet Guide](http://www.steves-internet-guide.com/) (see the references below).
+
+Removing the sensor reader code, the MQTT skeleton looks like this:
+
+```python
+class SensorReader:
+
+	def __init__(self):
+		self.stopped = False
+
+	def run(self):
+
+		broker = "broker_mosquitto_1"
+		port = 1883
+		client_id = "hea92weather01"
+		username = "hea92weather01"
+		password = "password"
+
+		def mqtt_on_connect(client, userdata, flags, rc):
+			if rc == 0:
+				print("Connected to MQTT broker")
+				client.connected_flag = True
+			else:
+				print("Failed to connect")
+
+		def mqtt_on_disconnect(client, userdata, rc):
+			print("Disconnecting reason " + str(rc))
+			client.connected_flag = False
+			client.disconnect_flag = True
+
+		client = mqtt.Client(client_id)
+		client.on_connect = mqtt_on_connect
+		client.on_disconnect = mqtt_on_disconnect
+		client.connected_flag = False
+		client.username_pw_set(username, password)
+		client.connect(broker, port)
+		client.loop_start()
+
+		while not self.stopped and not client.connected_flag:
+			print("Waiting for connection")
+			sleep(1)
+
+		while not self.stopped:
+
+			if (client.connected_flag):
+
+				# Get and publish sensor readings
+                
+				sleep(1)
+
+			else:
+				print("Connection lost.  Waiting for reconnection")
+				sleep(5)
+
+		client.loop_stop()
+		client.disconnect()
+
+	def stop(self, signal, frame):
+		print("Stopping SensorReader")
+		self.stopped = True
+
+def main():
+	sensorReader = SensorReader()
+	signal.signal(signal.SIGINT, sensorReader.stop)
+	signal.signal(signal.SIGTERM, sensorReader.stop)
+	sensorReader.run()
+
+if __name__ == "__main__":
+	main()
+```
+
+References:
+
+- [Python MQTT Client Connections– Working with Connections](http://www.steves-internet-guide.com/client-connections-python-mqtt/)
+- [Paho Python MQTT Client – Understanding Callbacks](http://www.steves-internet-guide.com/mqtt-python-callbacks/)
+- [Paho Python MQTT Client-Understanding The Loop](http://www.steves-internet-guide.com/loop-python-mqtt-client/)
+
 ## InfluxDB Local Storage
 
 ### Introduction

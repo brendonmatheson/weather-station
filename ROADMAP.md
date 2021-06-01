@@ -7,10 +7,9 @@
 |                 |                                                              |                                                              |             |            |
 | **Prioritized** |                                                              |                                                              |             |            |
 |                 |                                                              |                                                              |             |            |
-| WST-1           | Endurance test of the 18650 UPS board                        |                                                              |             |            |
+| WST-1           | Endurance test of the 18650 UPS board                        | First endurance test ran for almost 16 hours - this was while SSD was out of action so was using SD card. | In Progress | 2021-05-30 |
 | WST-2           | Measure power consumption of the 18650 UPS board when charging from empty on mains |                                                              |             |            |
 | WST-3           | Measure power consumption of the 18650 UPS board when charging from empty on PoE+ |                                                              |             |            |
-| WST-29          | Reconnect MQTT when dropped                                  |                                                              | In Progress | 2021-05-26 |
 | WST-7           | Check and set the QoS params for MQTT messages to ensure best delivery rate |                                                              |             |            |
 | WST-6           | Tune retention settings for on-station InfluxDB              |                                                              |             |            |
 | WST-8           | Setup on-prem InfluxDB using v2.x                            |                                                              |             |            |
@@ -36,6 +35,7 @@
 | WST-25          | Sensor / Rain Fall / Misol Rain Gauge                        |                                                              |             |            |
 | WST-26          | Sensor / PM 2.5 / PMS5003                                    |                                                              |             |            |
 | WST-28          | Stevenson screened enclosure                                 |                                                              |             |            |
+| WST-31          | Weather simulator                                            | To make it easy to get up and running for new users of this stack - a containerized script that simulates real weather station harware by publishing generated values to the MQTT topics.  Enables you to run the data plane with no hardware to see it working before you start adding sensors. |             |            |
 |                 |                                                              |                                                              |             |            |
 | **Complete**    |                                                              |                                                              |             |            |
 |                 |                                                              |                                                              |             |            |
@@ -43,5 +43,6 @@
 | WST-27          | Make local-storage automatically start on boot               |                                                              | Complete    | 2021-05-26 |
 | WST-14          | Sensor / Sunlight / GY1145                                   | Visible / UV-A / UV-B.  Also test to see how much, if any, of the UV-C spectrum it can see. | Complete    | 2021-05-26 |
 | WST-30          | Wrap sensor_loop in a Docker image                           |                                                              | Complete    | 2021-05-30 |
+| WST-29          | Reconnect MQTT when dropped                                  |                                                              | Complete    | 2021-06-01 |
 |                 |                                                              |                                                              |             |            |
 
