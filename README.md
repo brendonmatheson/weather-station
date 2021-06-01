@@ -437,6 +437,93 @@ References:
 
 - [Raspberry Pi and Si1145 sensor example](http://www.pibits.net/code/raspberry-pi-and-si1145-sensor-example.php)
 
+## Home Assistant Configuration
+
+### MQTT Bridge Connection
+
+We need to tell Home Assistant how to connect to our on-prem MQTT server by adding the `mqtt`element to confguration.yaml:
+
+```yaml
+mqtt:
+  broker: "10.80.2.60"
+  port: 1883
+  client_id: "bkk80ha"
+  username: "bkk80ha"
+  password: "password"
+```
+
+### MQTT Sensor Definitions
+
+We need to add MQTT sensor definitions to Home Assistant's configuration.yaml with an entry for each value that we want to be able to track and visualize in HA.
+
+The fundamental definition declares the MQTT sensor, gives it a name and maps in the topic from which the value will be obtained:
+
+```yaml
+- platform: "mqtt"
+  name: "Home Temperature"
+  state_topic: "weather/home/temperature"
+```
+
+On top of this basic definition we can also use the device_class to identify the type of the value.  Home Assistant supports the following [device classes](https://developers.home-assistant.io/docs/core/entity/sensor/#available-device-classes):
+
+- battery
+- carbon_dioxide
+- carbon_monoxide
+- humidity
+- illuminance
+- signal_strength
+- temperature
+- timestamp
+- power
+- pressure
+- current
+- energy
+- power_factor
+- voltage
+
+We can also specify a unit_of_measurement which is just a string appended to the value when presented.  Finally since the values emitted from the sensor-reader script are long floating point numbers so we can round these up to two decimal places using the `round()` function.
+
+Putting these together, here is the full set of MQTT sensor definitions covering readings from the BME280 atmospheric sensor and the SI1145 light sensor:
+
+```yaml
+  - platform: "mqtt"
+    name: "HEA92 Temperature"
+    state_topic: "weather/hea92weather01/temperature"
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    value_template: "{{ value_json | round(2) }}"
+  - platform: "mqtt"
+    name: "HEA92 Humidity"
+    state_topic: "weather/hea92weather01/humidity"
+    device_class: "humidity"
+    unit_of_measurement: "%"
+    value_template: "{{ value_json | round(2) }}"
+  - platform: "mqtt"
+    name: "HEA92 Pressure"
+    state_topic: "weather/hea92weather01/pressure"
+    device_class: "pressure"
+    unit_of_measurement: "mbar"
+    value_template: "{{ value_json | round(2) }}"
+  - platform: "mqtt"
+    name: "HEA92 Visible Light"
+    state_topic: "weather/hea92weather01/visible"
+    device_class: "illuminance"
+  - platform: "mqtt"
+    name: "HEA92 UV"
+    state_topic: "weather/hea92weather01/uv"
+    device_class: "illuminance"
+  - platform: "mqtt"
+    name: "HEA92 IR"
+    state_topic: "weather/hea92weather01/ir"
+    device_class: "illuminance"
+```
+
+References:
+
+- [MQTT Sensor](https://www.home-assistant.io/integrations/sensor.mqtt/)
+- [Device Class](https://www.home-assistant.io/integrations/sensor/#device-class)
+- [Available Device Classes](https://developers.home-assistant.io/docs/core/entity/sensor/#available-device-classes)
+
 ## Appendix A - Useful Commands
 
 ### i2cdetect

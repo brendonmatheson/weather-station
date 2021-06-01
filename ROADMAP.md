@@ -14,6 +14,7 @@
 | WST-6           | Tune retention settings for on-station InfluxDB              |                                                              |             |            |
 | WST-8           | Setup on-prem InfluxDB using v2.x                            |                                                              |             |            |
 | WST-9           | Update Grafana config to use on-prem InfluxDB                |                                                              |             |            |
+| WST-33          | Home Assistant Integration                                   |                                                              | In Progress |            |
 |                 |                                                              |                                                              |             |            |
 | **Backlog**     |                                                              |                                                              |             |            |
 |                 |                                                              |                                                              |             |            |
