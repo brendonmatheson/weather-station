@@ -5,12 +5,6 @@ import smbus2
 import SI1145.SI1145 as SI1145
 from time import sleep
 
-def mqtt_on_connect(client, userdata, flags, rc):
-	if rc == 0:
-		print("Connected to MQTT broker")
-	else:
-		print("Failed to connect")
-
 class SensorReader:
 
 	def __init__(self):
@@ -22,16 +16,36 @@ class SensorReader:
 		# Configure MQTT CLient
 		#
 
-		broker = "broker_mosquitto_1"
+		#broker = "broker_mosquitto_1"
+		broker = "localhost"
 		port = 1883
 		client_id = "hea92weather01"
 		username = "hea92weather01"
 		password = "password"
 
+		def mqtt_on_connect(client, userdata, flags, rc):
+			if rc == 0:
+				print("Connected to MQTT broker")
+				client.connected_flag = True
+			else:
+				print("Failed to connect")
+
+		def mqtt_on_disconnect(client, userdata, rc):
+			print("Disconnecting reason " + str(rc))
+			client.connected_flag = False
+			client.disconnect_flag = True
+
 		client = mqtt.Client(client_id)
-		client.username_pw_set(username, password)
 		client.on_connect = mqtt_on_connect
+		client.on_disconnect = mqtt_on_disconnect
+		client.connected_flag = False
+		client.username_pw_set(username, password)
 		client.connect(broker, port)
+		client.loop_start()
+
+		while not self.stopped and not client.connected_flag:
+			print("Waiting for connection")
+			sleep(1)
 
 		#
 		# BME280
@@ -52,37 +66,47 @@ class SensorReader:
 		weather_station_id = "hea92weather01"
 
 		while not self.stopped:
-			# BME280
-			bme280_data = bme280.sample(bus, address)
-			humidity = bme280_data.humidity
-			pressure = bme280_data.pressure
-			temperature = bme280_data.temperature
 
-			# SI1145
-			lightVisible = si1145.readVisible()
-			lightUV = si1145.readUV()
-			lightIR = si1145.readIR()
+			if (client.connected_flag):
 
-			# Publish
-			influx = "weather,station=hea92weather01 " + \
-				"humidity=" + str(humidity) + \
-				",pressure=" + str(pressure) + \
-				",temperature=" + str(temperature) + \
-				",visible=" + str(lightVisible) + \
-				",uv=" + str(lightUV) + \
-				",ir=" + str(lightIR)
+				# BME280
+				bme280_data = bme280.sample(bus, address)
+				humidity = bme280_data.humidity
+				pressure = bme280_data.pressure
+				temperature = bme280_data.temperature
 
-			print(influx)
- 
-			client.publish("weather/" + weather_station_id + "/influx", influx)
-			client.publish("weather/" + weather_station_id + "/humidity", humidity)
-			client.publish("weather/" + weather_station_id + "/pressure", pressure)
-			client.publish("weather/" + weather_station_id + "/temperature", temperature)
-			client.publish("weather/" + weather_station_id + "/visible", lightVisible)
-			client.publish("weather/" + weather_station_id + "/uv", lightUV)
-			client.publish("weather/" + weather_station_id + "/ir", lightIR)
+				# SI1145
+				lightVisible = si1145.readVisible()
+				lightUV = si1145.readUV()
+				lightIR = si1145.readIR()
 
-			sleep(1)
+				# Publish
+				influx = "weather,station=hea92weather01 " + \
+					"humidity=" + str(humidity) + \
+					",pressure=" + str(pressure) + \
+					",temperature=" + str(temperature) + \
+					",visible=" + str(lightVisible) + \
+					",uv=" + str(lightUV) + \
+					",ir=" + str(lightIR)
+
+				print(influx)
+
+				client.publish("weather/" + weather_station_id + "/influx", influx)
+				client.publish("weather/" + weather_station_id + "/humidity", humidity)
+				client.publish("weather/" + weather_station_id + "/pressure", pressure)
+				client.publish("weather/" + weather_station_id + "/temperature", temperature)
+				client.publish("weather/" + weather_station_id + "/visible", lightVisible)
+				client.publish("weather/" + weather_station_id + "/uv", lightUV)
+				client.publish("weather/" + weather_station_id + "/ir", lightIR)
+
+				sleep(1)
+
+			else:
+				print("Connection lost.  Waiting for reconnection")
+				sleep(5)
+
+		client.loop_stop()
+		client.disconnect()
 
 	def stop(self, signal, frame):
 		print("Stopping SensorReader")
