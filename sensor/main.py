@@ -1,26 +1,35 @@
 import bme280
+import os
 import paho.mqtt.client as mqtt
 import signal
 import smbus2
 import SI1145.SI1145 as SI1145
 from time import sleep
 
+default_weather_station_id = "weather01"
+default_broker_host_name = "broker_mosquitto_1"
+default_broker_port = 1883
+default_broker_username = "username"
+default_broker_password = "password"
+default_sample_interval = 15
+
 class SensorReader:
 
 	def __init__(self):
 		self.stopped = False
 
-	def run(self):
+	def run( \
+		self, \
+		weather_station_id, \
+		broker_host_name, \
+		broker_port, \
+		broker_username, \
+		broker_password, \
+		sample_interval):
 
 		#
 		# Configure MQTT CLient
 		#
-
-		broker = "broker_mosquitto_1"
-		port = 1883
-		client_id = "hea92weather01"
-		username = "hea92weather01"
-		password = "password"
 
 		def mqtt_on_connect(client, userdata, flags, rc):
 			if rc == 0:
@@ -34,12 +43,12 @@ class SensorReader:
 			client.connected_flag = False
 			client.disconnect_flag = True
 
-		client = mqtt.Client(client_id)
+		client = mqtt.Client(weather_station_id)
 		client.on_connect = mqtt_on_connect
 		client.on_disconnect = mqtt_on_disconnect
 		client.connected_flag = False
-		client.username_pw_set(username, password)
-		client.connect(broker, port)
+		client.username_pw_set(broker_username, broker_password)
+		client.connect(broker_host_name, broker_port)
 		client.loop_start()
 
 		while not self.stopped and not client.connected_flag:
@@ -62,8 +71,6 @@ class SensorReader:
 
 		si1145 = SI1145.SI1145()
 
-		weather_station_id = "hea92weather01"
-
 		while not self.stopped:
 
 			if (client.connected_flag):
@@ -80,7 +87,7 @@ class SensorReader:
 				lightIR = si1145.readIR()
 
 				# Publish
-				influx = "weather,station=hea92weather01 " + \
+				influx = "weather,station=" + weather_station_id + " " + \
 					"humidity=" + str(humidity) + \
 					",pressure=" + str(pressure) + \
 					",temperature=" + str(temperature) + \
@@ -98,7 +105,7 @@ class SensorReader:
 				client.publish("weather/" + weather_station_id + "/uv", lightUV)
 				client.publish("weather/" + weather_station_id + "/ir", lightIR)
 
-				sleep(1)
+				sleep(sample_interval)
 
 			else:
 				print("Connection lost.  Waiting for reconnection")
@@ -112,10 +119,52 @@ class SensorReader:
 		self.stopped = True
 
 def main():
+
+	weather_station_id = os.getenv("WEATHER_STATION_ID")
+	if (weather_station_id == None):
+		weather_station_id = default_weather_station_id
+
+	broker_host_name = os.getenv("BROKER_HOST_NAME")
+	if (broker_host_name == None):
+		broker_host_name = default_broker_host_name
+
+	broker_port = os.getenv("BROKER_PORT")
+	if (broker_port == None):
+		broker_port = default_broker_port
+
+	broker_username = os.getenv("BROKER_USERNAME")
+	if (broker_username == None):
+		broker_username = default_broker_username
+
+	broker_password = os.getenv("BROKER_PASSWORD")
+	if (broker_password == None):
+		broker_password = default_broker_password
+
+	sample_interval = os.getenv("SAMPLE_INTERVAL")
+	if (sample_interval == None):
+		sample_interval = default_sample_interval
+
+	sample_interval = int(sample_interval)
+
+	print("Configuration:")
+	print("+ weather_station_id: " + str(weather_station_id))
+	print("+ broker_host_name: " + str(broker_host_name))
+	print("+ broker_port: " + str(broker_port))
+	print("+ broker_username: " + str(broker_username))
+	print("+ broker_password: " + str(broker_password))
+	print("+ sample_interval: " + str(sample_interval))
+
 	sensorReader = SensorReader()
 	signal.signal(signal.SIGINT, sensorReader.stop)
 	signal.signal(signal.SIGTERM, sensorReader.stop)
-	sensorReader.run()
+
+	sensorReader.run( \
+		weather_station_id, \
+		broker_host_name, \
+		broker_port, \
+		broker_username, \
+		broker_password, \
+		sample_interval)
 
 if __name__ == "__main__":
 	main()
