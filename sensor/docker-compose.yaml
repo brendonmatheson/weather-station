@@ -10,7 +10,7 @@ services:
       - "WEATHER_STATION_ID=hea92weather01"
       - "BROKER_USERNAME=hea92weather01"
       - "BROKER_PASSWORD=password"
-      - "SAMPLE_INTERVAL=5"
+      - "SAMPLE_INTERVAL=15"
     image: "aleisium/sensor-reader:latest"
     networks:
       - "weather0"
