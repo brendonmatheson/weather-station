@@ -9,5 +9,5 @@
 # work, Aleisium.  If you infringe our copyright, you render yourself liable
 # for prosecution.
 
-sudo docker exec -it broker_mosquitto_1 mosquitto_sub -t "weather/hea92weather01/influx" -u "hea92weather01" -P "password"
+sudo docker logs -f sensor_sensorreader_1
 

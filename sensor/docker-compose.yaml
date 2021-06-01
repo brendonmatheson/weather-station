@@ -6,8 +6,7 @@ services:
   #
 
   sensorreader:
-    build:
-      context: "."
+    image: "aleisium/sensor-reader:latest"
     networks:
       - "weather0"
     restart: "always"

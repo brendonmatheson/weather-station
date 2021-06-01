@@ -49,7 +49,7 @@ class SensorReader:
 
 		si1145 = SI1145.SI1145()
 
-		base_topic = "hea92weather01"
+		weather_station_id = "hea92weather01"
 
 		while not self.stopped:
 			# BME280
@@ -64,7 +64,7 @@ class SensorReader:
 			lightIR = si1145.readIR()
 
 			# Publish
-			line = "weather,station=hea92weather01 " + \
+			influx = "weather,station=hea92weather01 " + \
 				"humidity=" + str(humidity) + \
 				",pressure=" + str(pressure) + \
 				",temperature=" + str(temperature) + \
@@ -72,9 +72,15 @@ class SensorReader:
 				",uv=" + str(lightUV) + \
 				",ir=" + str(lightIR)
 
-			print(line)
+			print(influx)
  
-			client.publish("weather", line)
+			client.publish("weather/" + weather_station_id + "/influx", influx)
+			client.publish("weather/" + weather_station_id + "/humidity", humidity)
+			client.publish("weather/" + weather_station_id + "/pressure", pressure)
+			client.publish("weather/" + weather_station_id + "/temperature", temperature)
+			client.publish("weather/" + weather_station_id + "/visible", lightVisible)
+			client.publish("weather/" + weather_station_id + "/uv", lightUV)
+			client.publish("weather/" + weather_station_id + "/ir", lightIR)
 
 			sleep(1)
 

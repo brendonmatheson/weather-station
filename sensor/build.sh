@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sudo docker build -t sensor-reader .
+sudo docker build -t "aleisium/sensor-reader" .
 
