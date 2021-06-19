@@ -37,6 +37,10 @@
 | WST-31          | Weather simulator                                            | To make it easy to get up and running for new users of this stack - a containerized script that simulates real weather station harware by publishing generated values to the MQTT topics.  Enables you to run the data plane with no hardware to see it working before you start adding sensors. |             |            |
 | WST-34          | Replace UPS board                                            | 52pi's board seems to be the best available: https://wiki.52pi.com/index.php/UPS_(With_RTC_%26_Coulometer)_For_Raspberry_Pi_SKU:_EP-0118 |             |            |
 |                 |                                                              |                                                              |             |            |
+| **New**         | 35                                                           |                                                              |             |            |
+|                 |                                                              |                                                              |             |            |
+| WST-35          | US Power Outages                                             | Integrate data from https://poweroutage.us/ possibly using https://grafana.com/grafana/plugins/grafana-worldmap-panel/ |             |            |
+|                 |                                                              |                                                              |             |            |
 | **Complete**    |                                                              |                                                              |             |            |
 |                 |                                                              |                                                              |             |            |
 | WST-16          | Sensor / Atmosphere / BME280                                 |                                                              | Complete    | 2021-05-23 |
