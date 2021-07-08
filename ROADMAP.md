@@ -40,6 +40,7 @@
 | **New**         | 35                                                           |                                                              |             |            |
 |                 |                                                              |                                                              |             |            |
 | WST-35          | US Power Outages                                             | Integrate data from https://poweroutage.us/ possibly using https://grafana.com/grafana/plugins/grafana-worldmap-panel/ |             |            |
+| WST-36          | Integration Australian Space Weather                         | Did a test query using Postman and using their provided test tool and got all empty results. http://sws-data.sws.bom.gov.au/api-docs |             |            |
 |                 |                                                              |                                                              |             |            |
 | **Complete**    |                                                              |                                                              |             |            |
 |                 |                                                              |                                                              |             |            |
