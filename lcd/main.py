@@ -4,7 +4,8 @@ import paho.mqtt.client as mqtt
 import signal
 import time
 
-default_client_id = "hea92weather01-lcd"
+default_weather_station_id = "weather01"
+default_broker_client_id = "lcd"
 default_broker_host_name = "broker_mosquitto_1"
 default_broker_port = 1883
 default_broker_username = "username"
@@ -25,7 +26,8 @@ class Subscriber:
 
 	def run( \
 		self, \
-		client_id, \
+		weather_station_id, \
+		broker_client_id, \
 		broker_host_name, \
 		broker_port, \
 		broker_username, \
@@ -75,7 +77,7 @@ class Subscriber:
 				self.light_uv = int(payload)
 
 
-		client = mqtt.Client(client_id)
+		client = mqtt.Client(broker_client_id)
 		client.on_connect = mqtt_on_connect
 		client.on_disconnect = mqtt_on_disconnect
 		client.on_subscribe = mqtt_on_subscribe
@@ -199,9 +201,13 @@ class Subscriber:
 def main():
 
 
-	client_id = os.getenv("CLIENT_ID")
-	if (client_id == None):
-		client_id = default_client_id
+	broker_client_id = os.getenv("BROKER_CLIENT_ID")
+	if (broker_client_id == None):
+		broker_client_id = default_broker_client_id
+
+	weather_station_id = os.getenv("WEATHER_STATION_ID")
+	if (weather_station_id == None):
+		weather_station_id = default_weather_station_id
 
 	broker_host_name = os.getenv("BROKER_HOST_NAME")
 	if (broker_host_name == None):
@@ -220,7 +226,8 @@ def main():
 		broker_password = default_broker_password
 
 	print("Configuration:")
-	print("+ client_id: " + str(client_id))
+	print("+ weather_station_id: " + str(weather_station_id))
+	print("+ broker_client_id: " + str(broker_client_id))
 	print("+ broker_host_name: " + str(broker_host_name))
 	print("+ broker_port: " + str(broker_port))
 	print("+ broker_username: " + str(broker_username))
@@ -231,7 +238,8 @@ def main():
 	signal.signal(signal.SIGTERM, subscriber.stop)
 
 	subscriber.run( \
-		client_id, \
+		weather_station_id, \
+		broker_client_id, \
 		broker_host_name, \
 		broker_port, \
 		broker_username, \

@@ -1,0 +1,26 @@
+version: "3"
+services:
+
+  #
+  # LCD
+  #
+
+  lcd:
+    environment:
+      - "WEATHER_STATION_ID=hea92weather01"
+      - "BROKER_CLIENT_ID=hea92weather01_lcd"
+      - "BROKER_USERNAME=lcd"
+      - "BROKER_PASSWORD=password"
+      - "SAMPLE_INTERVAL=15"
+    image: "aleisium/lcd:latest"
+    networks:
+      - "weather0"
+    restart: "always"
+    devices:
+      - "/dev/i2c-1:/dev/i2c-1"
+
+networks:
+  weather0:
+    external: true
+    name: weather0
+
