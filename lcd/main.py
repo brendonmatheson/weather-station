@@ -45,7 +45,7 @@ class Subscriber:
 			if rc == 0:
 				print("MQTT connected")
 				client.connected_flag = True
-				client.subscribe("weather/hea92weather01/#", qos=0)
+				client.subscribe("weather/{}/#".format(weather_station_id), qos=0)
 			else:
 				print("Connection Failed")
 
@@ -63,17 +63,17 @@ class Subscriber:
 			payload = str(message.payload.decode("utf-8"))
 			#print("message received", str(message.topic), payload)
 
-			if message.topic == "weather/hea92weather01/temperature":
+			if message.topic == "weather/{}/temperature".format(weather_station_id):
 				self.temperature = float(payload)
-			if message.topic == "weather/hea92weather01/humidity":
+			if message.topic == "weather/{}/humidity".format(weather_station_id):
 				self.humidity = float(payload)
-			if message.topic == "weather/hea92weather01/pressure":
+			if message.topic == "weather/{}/pressure".format(weather_station_id):
 				self.pressure = float(payload)
-			if message.topic == "weather/hea92weather01/visible":
+			if message.topic == "weather/{}/visible".format(weather_station_id):
 				self.light_visible = int(payload)
-			if message.topic == "weather/hea92weather01/ir":
+			if message.topic == "weather/{}/ir".format(weather_station_id):
 				self.light_ir = int(payload)
-			if message.topic == "weather/hea92weather01/uv":
+			if message.topic == "weather/{}/uv".format(weather_station_id):
 				self.light_uv = int(payload)
 
 
