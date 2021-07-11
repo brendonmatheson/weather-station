@@ -32,7 +32,7 @@ class Subscriber:
 		broker_password):
 
 		LCD.lcd_clear()
-		self.show_page("Initializing", "", "", "")
+		self.show_page("", self.center("Initializing"), "", "")
 		time.sleep(2)
 
 		#
@@ -41,19 +41,21 @@ class Subscriber:
 
 		def mqtt_on_connect(client, userdata, flags, rc):
 			if rc == 0:
-				#self.show_page("MQTT Connected", "", "", "")
+				print("MQTT connected")
 				client.connected_flag = True
+				client.subscribe("weather/hea92weather01/#", qos=0)
 			else:
-				#self.show_page("Connection Failed", "", "", "")
 				print("Connection Failed")
 
 		def mqtt_on_disconnect(client, userdata, rc):
-			#self.show_page("Disconnected", "", "", "")
+			print("Disconnected with reason: " + str(rc))
 			client.connected_flag = False
 
 		def mqtt_on_subscribe(client, userdata, mid, granted_qos):
-			#self.show_page("Subscribed", "", "", "")
 			print("Subscribed")
+
+		def mqtt_on_unsubscribe(client, userdata, mid):
+			print("Unsubscribed")
 
 		def mqtt_on_message(client, userdata, message):
 			payload = str(message.payload.decode("utf-8"))
@@ -77,16 +79,16 @@ class Subscriber:
 		client.on_connect = mqtt_on_connect
 		client.on_disconnect = mqtt_on_disconnect
 		client.on_subscribe = mqtt_on_subscribe
+		client.on_unsubscribe = mqtt_on_unsubscribe
 		client.on_message = mqtt_on_message
 		client.connected_flag = False
 		client.username_pw_set(broker_username, broker_password)
 		client.connect(broker_host_name, broker_port)
-		client.subscribe("weather/hea92weather01/#", qos=0)
 
 		client.loop_start()
 
 		while not self.stopped and not client.connected_flag:
-			self.show_page("Connecting MQTT", "", "", "")
+			self.show_page("", self.center("Connecting MQTT"), "", "")
 			time.sleep(1)
 
 		# page is 1-baesd
@@ -94,20 +96,32 @@ class Subscriber:
 		page = 1
 
 		while not self.stopped:
-			for x in range(5):
-				if self.stopped:
-					break
-				if (page == 1):
-					self.show_page_1()
-				elif (page == 2):
-					self.show_page_2()
 
-				time.sleep(1)
+			if client.connected_flag:
 
-			page += 1
-			if (page > pages):
-				print("Advancing page")
-				page = 1
+				for x in range(5):
+					if self.stopped:
+						break
+					if (page == 1):
+						self.show_page_1()
+					elif (page == 2):
+						self.show_page_2()
+
+					time.sleep(1)
+
+				page += 1
+				if (page > pages):
+					print("Advancing page")
+					page = 1
+
+			else:
+				print("MQTT connection lost")
+				self.show_page( \
+					"", \
+					"MQTT connection lost", \
+					"Trying to reconnect", \
+					"")
+				time.sleep(5)
 
 		client.loop_stop()
 		client.disconnect()
@@ -175,8 +189,11 @@ class Subscriber:
 
 		return element
 
+	def center(self, message):
+		return "{:^20}".format(message)[:20]
+
 	def stop(self, signal, frame):
-		self.show_page("Stopping", "", "", "")
+		self.show_page("", self.center("Stopping"), "", "")
 		self.stopped = True
 
 def main():
