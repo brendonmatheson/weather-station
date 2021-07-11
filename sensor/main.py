@@ -28,7 +28,7 @@ class SensorReader:
 		sample_interval):
 
 		#
-		# Configure MQTT CLient
+		# Configure MQTT Client
 		#
 
 		def mqtt_on_connect(client, userdata, flags, rc):
