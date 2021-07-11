@@ -8,6 +8,7 @@ services:
   sensorreader:
     environment:
       - "WEATHER_STATION_ID=hea92weather01"
+      - "BROKER_CLIENT_ID=hea92weather01_sensor"
       - "BROKER_USERNAME=hea92weather01"
       - "BROKER_PASSWORD=password"
       - "SAMPLE_INTERVAL=15"

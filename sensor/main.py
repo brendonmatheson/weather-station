@@ -7,6 +7,7 @@ import SI1145.SI1145 as SI1145
 from time import sleep
 
 default_weather_station_id = "weather01"
+default_broker_client_id = "sensor"
 default_broker_host_name = "broker_mosquitto_1"
 default_broker_port = 1883
 default_broker_username = "username"
@@ -21,6 +22,7 @@ class SensorReader:
 	def run( \
 		self, \
 		weather_station_id, \
+		broker_client_id, \
 		broker_host_name, \
 		broker_port, \
 		broker_username, \
@@ -43,7 +45,7 @@ class SensorReader:
 			client.connected_flag = False
 			client.disconnect_flag = True
 
-		client = mqtt.Client(weather_station_id)
+		client = mqtt.Client(broker_client_id)
 		client.on_connect = mqtt_on_connect
 		client.on_disconnect = mqtt_on_disconnect
 		client.connected_flag = False
@@ -124,6 +126,10 @@ def main():
 	if (weather_station_id == None):
 		weather_station_id = default_weather_station_id
 
+	broker_client_id = os.getenv("BROKER_CLIENT_ID")
+	if (broker_client_id == None):
+		broker_client_id = default_broker_client_id
+
 	broker_host_name = os.getenv("BROKER_HOST_NAME")
 	if (broker_host_name == None):
 		broker_host_name = default_broker_host_name
@@ -148,6 +154,7 @@ def main():
 
 	print("Configuration:")
 	print("+ weather_station_id: " + str(weather_station_id))
+	print("+ broker_client_id: " + str(broker_client_id))
 	print("+ broker_host_name: " + str(broker_host_name))
 	print("+ broker_port: " + str(broker_port))
 	print("+ broker_username: " + str(broker_username))
@@ -160,6 +167,7 @@ def main():
 
 	sensorReader.run( \
 		weather_station_id, \
+		broker_client_id, \
 		broker_host_name, \
 		broker_port, \
 		broker_username, \
