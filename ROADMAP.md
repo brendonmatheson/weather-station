@@ -37,7 +37,7 @@
 | WST-31          | Weather simulator                                            | To make it easy to get up and running for new users of this stack - a containerized script that simulates real weather station harware by publishing generated values to the MQTT topics.  Enables you to run the data plane with no hardware to see it working before you start adding sensors. |             |            |
 | WST-34          | Replace UPS board                                            | 52pi's board seems to be the best available: https://wiki.52pi.com/index.php/UPS_(With_RTC_%26_Coulometer)_For_Raspberry_Pi_SKU:_EP-0118 |             |            |
 |                 |                                                              |                                                              |             |            |
-| **New**         | 35                                                           |                                                              |             |            |
+| **New**         | 37                                                           |                                                              |             |            |
 |                 |                                                              |                                                              |             |            |
 | WST-35          | US Power Outages                                             | Integrate data from https://poweroutage.us/ possibly using https://grafana.com/grafana/plugins/grafana-worldmap-panel/ |             |            |
 | WST-36          | Integration Australian Space Weather                         | Did a test query using Postman and using their provided test tool and got all empty results. http://sws-data.sws.bom.gov.au/api-docs |             |            |
@@ -52,5 +52,6 @@
 | WST-32          | Parameterize                                                 | Currently many values are hardcoded for my environment.  Need to parameterize so that others could use it. | Complete    | 2021-06-01 |
 | WST-4           | External activity LED                                        |                                                              | Complete    | 2021-05-29 |
 | WST-5           | 3D printed mount for PoE+ adapter                            | This is assuming the PoE+ adapter passes the power consumption tests | Complete    | 2021-05-28 |
+| WST-37          | Split client_id from weather_station_id                      | Already did this with the new lcd service.  Apply the same to the sensor service. | Complete    | 2021-07-11 |
 |                 |                                                              |                                                              |             |            |
 
